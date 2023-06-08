@@ -5,8 +5,6 @@ import './index.css'
 import Notification from './components/Notification'
 import loginService from './services/login' 
 
-
-
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note...')
@@ -16,18 +14,22 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
 
-
   useEffect(() => {
-    console.log('effect')
     noteService
       .getAll()
       .then(initialNotes => {
         setNotes(initialNotes)
       })
   }, [])
-  console.log('render', notes.length, 'notes')
 
-
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
@@ -77,6 +79,11 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      
+      window.localStorage.setItem(
+        'loggedNoteappUser', JSON.stringify(user)
+      )
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -129,7 +136,10 @@ const App = () => {
 
     {user === null ?
       loginForm() :
-      noteForm()
+      <div>
+        <p>{user.name} logged-in</p>
+        {noteForm()}
+      </div>
     }
 
     <h2>Notes</h2>
