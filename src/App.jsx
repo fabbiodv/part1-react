@@ -118,9 +118,6 @@ const App = () => {
           {noteForm()}
         </div>
       )}
-
-      <h2>Notes</h2>
-
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -135,6 +132,8 @@ const App = () => {
           />
         ))}
       </ul>
+      <h1>Note app, Department of Computer Science, University of Helsinki 2020</h1>
+
       {/* <form onSubmit={addNote}>
         <input value={newNote} onChange={handleNoteChange} />
         <button type="submit">save</button>
